@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page { size: 80mm auto; margin: 0; }
+        body { 
+            width: 80mm; 
+            margin: 0; 
+            padding: 5mm; 
+            font-family: 'Courier New', Courier, monospace; 
+            font-size: 12px; 
+            line-height: 1.2;
+        }
+        /* ... rest of your styles ... */        .text-center { text-align: center; }
+        .logo { width: 50px; height: auto; margin-bottom: 5px; }
+        .divider { border-top: 1px dashed #000; margin: 5px 0; }
+        table { width: 100%; border-collapse: collapse; }
+        .item-row td { padding: 3px 0; }
+        .total-section { font-weight: bold; margin-top: 10px; }
+        @media print {
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body onload="window.print()">
+    <div class="text-center">
+        <img src="{% static 'inventory/images/logo.png' %}" class="logo" alt="AZNAN">
+        <h3 style="margin:0;">AZNAN PHARMACY</h3>
+        <p>IBB Way, Bakin Kasuwa, Opposite Eye Center, Katsina, Katsina State, Nigeria<br>
+        Tel: 08167899122 | 07039522767 | 08102716591</p>
+    </div>
+
+    <div class="divider"></div>
+    <p>
+        Date: {{ sale.transaction_date|date:"d/m/Y H:i" }}<br>
+        Receipt: #{{ sale.id }}<br>
+        Customer: {{ sale.customer_name }}<br>
+        Cashier: {{ sale.cashier.username }}
+    </p>
+    <div class="divider"></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th align="left">Item</th>
+                <th align="center">Qty</th>
+                <th align="right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr class="item-row">
+                <td>{{ item.medicine.name }}</td>
+                <td align="center">{{ item.quantity }}</td>
+                <td align="right">₦{{ item.subtotal }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="divider"></div>
+    <div class="total-section">
+        <div style="display: flex; justify-content: space-between;">
+            <span>Subtotal:</span> <span>₦{{ sale.total_before_discount }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <span>Discount:</span> <span>-₦{{ sale.discount }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+            <span>TOTAL:</span> <span>₦{{ sale.total_after_discount }}</span>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+    <p class="text-center">** THANK YOU FOR YOUR PATRONAGE **</p>
+    <p class="text-center no-print">
+        <button onclick="window.close()">Close</button>
+    </p>
+</body>
+</html>
